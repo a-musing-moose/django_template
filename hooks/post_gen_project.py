@@ -1,11 +1,16 @@
 import pathlib
+import secrets
+
 
 PROJECT_ROOT = pathlib.Path()
 
-def main():
-    secret_key = "1234.567"
-    _set_secret_key(secret_key)
 
+def main():
+    secret_key = "".join(
+        secrets.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)")
+        for i in range(50)
+    )
+    _set_secret_key(secret_key)
 
 
 def _set_secret_key(secret_key):
