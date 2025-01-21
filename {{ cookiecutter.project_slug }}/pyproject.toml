@@ -1,0 +1,94 @@
+[project]
+name = "{{ cookiecutter.project_name }}"
+description = ""
+readme = "README.md"
+authors = [
+    {name = "Jonathan Moss", email = "jonathan@miss-scarlet.house"}
+]
+version = "0.1.0"
+requires-python = ">=3.12,<4"
+
+dependencies = [
+    "django >= 5.1.5, < 6",
+    "django-environ >= 0.12.0, < 1.0",
+    "psycopg [binary, pool] >= 3.2.0, < 4.0.0",
+    "uvicorn >= 0.34.0, < 1.0",
+    "uvloop  >= 0.21.0, < 1.0.0; sys_platform != 'win32'",
+    "sentry-sdk >= 2.20.0, < 3.0",
+    "httptools >= 0.6.4, < 1.0"
+]
+
+[project.scripts]
+manage = "{{ cookiecutter.project_slug }}.manage:main"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+packages = [{include = "{{ cookiecutter.project_slug }}", from = "src"}]
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.9.0"
+
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.8.0"
+black = "^24.10.0"
+django-stubs = "^5.1.0"
+factory-boy = "^3.3.0"
+flake8 = "^7.1.0"
+flake8-bandit = "^4.1.1"
+flake8-black = "^0.3.6"
+flake8-bugbear = "^24.12.0"
+flake8-builtins = "^2.5.0"
+flake8-isort = "^6.1.0"
+invoke = "^2.2.0"
+ipython = "^8.31.0"
+isort = "^5.13.0"
+mkdocs = "^1.6.0"
+mkdocs-material = "^9.5.0"
+mkdocstrings = "^0.27.0"
+mypy = { extras = ["mypyc"], version = "^1.14.0" }
+poetry = "^1.8.0"
+pudb = "^2024.1.0"
+pytest = "^8.3.0"
+pytest-cov = "^6.0.0"
+pytest-django = "^4.9.0"
+pytest-playwright = "^0.6.0"
+pytest-spec = "^4.0.0"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[tool.mypy]
+strict = true
+plugins = ["mypy_django_plugin.main"]
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "environ"
+
+[tool.django-stubs]
+django_settings_module = "{{ cookiecutter.project_slug }}.main.settings"
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "{{ cookiecutter.project_slug }}.main.settings"
+addopts = "--rootdir src --spec"
+norecursedirs = ".git .venv docs data"
+spec_header_format = "{test_case} [{module_path}]:"
+
+markers = """
+    functional: functions/end-to-end tests
+    system: Regular integration and unit tests
+"""
+
+# We should never be dealing with naive datetimes. If we need to test with
+# naive datetimes, we should explicitly catch the warning in the test.
+# Otherwise, naive datetimes should raise errors.
+filterwarnings = """
+    error:.*received a naive datetime:RuntimeWarning:django.db.models.fields
+"""
+
+[tool.coverage.run]
+omit = ["**/migrations/*"]
