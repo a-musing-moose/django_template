@@ -13,12 +13,14 @@ PACKAGE = "{{ cookiecutter.project_slug }}"
 # GETTING STARTED #
 ###################
 
+
 @invoke.task
 def help(ctx):
     """
     Displays help text
     """
     ctx.run("inv -l", pty=True)
+
 
 @invoke.task()
 def install(ctx, skip_install_playwright: bool = False):
@@ -37,14 +39,13 @@ def install(ctx, skip_install_playwright: bool = False):
         ctx.run("poetry run playwright install --with-deps")
 
 
-
 #####################
 # QUALITY ASSURANCE #
 #####################
 
 
 @invoke.task
-def format(ctx, check: bool = False) -> None:
+def format(ctx, check: bool = False) -> None:  # noqa: A001
     """
     Apply automatic code formatting tools
 
@@ -52,9 +53,10 @@ def format(ctx, check: bool = False) -> None:
     When `check` is True, it performs a dry-run to identify non-compliant
     files without applying changes.
     """
-    _title("Applying code formatters ")
-    ctx.run(f"poetry run black src{' --check' if check else ''}")
-    ctx.run(f"poetry run isort src{' --check' if check else ''}")
+    suffix = " (check only)" if check else ""
+    _title(f"Applying code formatters{suffix}")
+    ctx.run(f"poetry run ruff format src{' --check' if check else ''}")
+    ctx.run(f"poetry run ruff check --select I{' --fix' if not check else ''} src")
 
 
 @invoke.task
@@ -66,7 +68,9 @@ def typing(ctx):
     # PYTHONPATH must include the `src` folder for django-stubs to find the settings
     # module
     src_path = str((pathlib.Path() / "src").absolute())
-    with ctx.prefix(f"export PYTHONPATH={% raw %}${{PYTHONPATH}}{% endraw %}:{src_path}"):
+    with ctx.prefix(
+        f"export PYTHONPATH={% raw %}${{PYTHONPATH}}{% endraw %}:{src_path}"
+    ):
         try:
             ctx.run(f"poetry run dmypy run -- src/{PACKAGE}")
         except invoke.exceptions.UnexpectedExit:
@@ -93,36 +97,13 @@ def typing_daemon_stop(ctx):
 
 
 @invoke.task
-def lint(ctx):
+def lint(ctx, fix=False):
     """
     Check linting in the src folder
     """
-    _title("Linting code")
-    stdout_captured = []
+    _title(f"Linting code {'' if fix else '(check only)'}")
+    ctx.run(f"poetry run ruff check{' --fix ' if fix else ''} src")
 
-    # Need to collect the `stdout` during the command run in order to check
-    # for specific error messages in the output UnexpectedExit doesn't hold the stdout,
-    # and could capture stdout to a stream, but then if stdout and stderr both output
-    # they will not interpolate correctly
-    class StreamInterceptor(invoke.watchers.StreamWatcher):
-        def submit(self, stream):
-            stdout_captured.append(stream)
-            return (stream,)
-
-    try:
-        ctx.run("poetry run flake8 src", watchers=(StreamInterceptor(),))
-    except invoke.exceptions.UnexpectedExit:
-        stdout_text = "".join(stdout_captured)
-        for error_code in ("BLK100", "I001", "I003", "I004", "I004"):
-            if error_code in stdout_text:
-                print(
-                    "One or more formatting errors occurred. Please ensure you have run"
-                    " `inv format` to autoformat the code"
-                )
-                break
-        # By catching and raising the UnexpectedExit exception, the 'terminate on error'
-        # behaviour of invoke is preserved
-        raise
 
 
 @invoke.task
@@ -225,6 +206,7 @@ def build_image(ctx, tag=None, pty=True):
         echo=True,
     )
 
+
 @invoke.task
 def build_docs(ctx):
     """
@@ -268,7 +250,7 @@ def run_image(
         f"--network {network}",
         f"-e DATABASE_URL={database_url}",
         f"--env-file {env_file}",
-        f"{PACKAGE}:{tag}"
+        f"{PACKAGE}:{tag}",
     ]
 
     if command:
@@ -283,6 +265,7 @@ def run_docs(ctx):
     Run the {{ cookiecutter.project_name }} documentation locally
     """
     ctx.run("poetry run mkdocs serve")
+
 
 ###########
 # HELPERS #
