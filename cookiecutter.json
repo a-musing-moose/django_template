@@ -1,5 +1,5 @@
 {
-    "project_name": "Cookiecutter Website Simple",
+    "project_name": "A Project",
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
     "author_name": "Jonathan Moss",
     "author_email": "jonathan@miss-scarlet.house"
