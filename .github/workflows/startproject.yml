@@ -55,21 +55,15 @@ jobs:
 
       - name: Create test project
         run: |
-          touch config.yaml
-          echo "default_config:" >> config.yaml
-          echo "  project_name: "Test Project" >> config.yaml
-          echo "  project_slug: "test_project" >> config.yaml
-          echo "  author_name: "Github Action" >> config.yaml
-          echo "  author_email: "ga@example.com" >> config.yaml
-          cookiecutter --config-file config.yaml
+          cookiecutter --no-input .
 
       - name: Install test project
         run: |
-          cd test_project
+          cd a_project
           poetry run invoke install
 
       - name: Check test project is valid
         run: |
-          cd test_project
+          cd a_project
           cp example.env .env
           poetry run invoke check
