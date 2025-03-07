@@ -14,7 +14,7 @@ serve () {
         --no-use-colors \
         --access-log \
         --log-level="$UVICORN_LOG_LEVEL" \
-        {{ cookiecutter.project_slug }}.main.asgi:application
+        {{ cookiecutter.project_slug }}.asgi:application
 }
 
 if [ -z "$1" ] # nothing specified so we bootstrap the service itself

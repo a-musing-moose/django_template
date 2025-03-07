@@ -37,6 +37,6 @@ plugins:
           setup_commands:
             - import os, sys
             - sys.path.append("src")
-            - os.environ["DJANGO_SETTINGS_MODULE"] = "{{ cookiecutter.project_slug }}.main.settings"
+            - os.environ["DJANGO_SETTINGS_MODULE"] = "{{ cookiecutter.project_slug }}.settings"
   - tags:
       tags_file: tags.md
