@@ -58,10 +58,10 @@ ignore_missing_imports = true
 module = "environ"
 
 [tool.django-stubs]
-django_settings_module = "{{ cookiecutter.project_slug }}.main.settings"
+django_settings_module = "{{ cookiecutter.project_slug }}.settings"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "{{ cookiecutter.project_slug }}.main.settings"
+DJANGO_SETTINGS_MODULE = "{{ cookiecutter.project_slug }}.settings"
 addopts = "--rootdir src --spec"
 norecursedirs = ".git .venv docs data"
 spec_header_format = "{test_case} [{module_path}]:"

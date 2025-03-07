@@ -5,7 +5,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 env = environ.Env()
 
@@ -48,7 +48,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "{{ cookiecutter.project_slug }}.main.urls"
+ROOT_URLCONF = "{{ cookiecutter.project_slug }}.urls"
 
 TEMPLATES = [
     {
@@ -66,7 +66,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "{{ cookiecutter.project_slug }}.main.wsgi.application"
+WSGI_APPLICATION = "{{ cookiecutter.project_slug }}.wsgi.application"
 
 
 # Database

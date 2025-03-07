@@ -1,6 +1,6 @@
 import json
 
-from {{ cookiecutter.project_slug }}.main import views
+from {{ cookiecutter.project_slug }} import views
 
 
 def test_releases_view_includes_revision_details(settings, rf):
