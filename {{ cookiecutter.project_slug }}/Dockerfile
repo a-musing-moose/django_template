@@ -1,21 +1,21 @@
 # Packaging Stage
 # ===============
 
-FROM python:3.13.2-slim-bookworm as packager
+FROM python:3.13.2-slim-bookworm AS packager
 ENV PYTHONUNBUFFERED=1
-RUN pip install -U pip && pip install poetry poetry-plugin-export
+RUN pip install -U pip && pip install poetry poetry-plugin-freze
 COPY README.md pyproject.toml poetry.lock /source/
 COPY src /source/src/
 WORKDIR /source/
 
-# Uses export to get a pinned list of requirements
-RUN rm -rf dist && poetry export -o requirements.txt && poetry build
+# Create a wheel with frozen requirements
+RUN rm -rf dist && poetry build  && poetry freeze-wheel
 
 
 # Building Stage
 # ==============
 
-FROM python:3.13.2-slim-bookworm as builder
+FROM python:3.13.2-slim-bookworm AS builder
 ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get install -y \
@@ -32,18 +32,14 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN pip install -U pip
 
-# Install pinned dependencies
-COPY --from=packager /source/requirements.txt /
-RUN pip install -r requirements.txt
-
 # Install the application itself
 COPY --from=packager /source/dist/*.whl /
-RUN pip install --no-deps *.whl
+RUN pip install *.whl
 
 # Final Runtime
 # =============
 
-FROM python:3.13.2-slim-bookworm as runtime
+FROM python:3.13.2-slim-bookworm AS runtime
 ENV PYTHONUNBUFFERED=1
 
 ARG GIT_COMMIT_HASH

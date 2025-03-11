@@ -26,7 +26,7 @@ requires-poetry = ">=2.0"
 packages = [{include = "{{ cookiecutter.project_slug }}", from = "src"}]
 
 [tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.9.0"
+poetry-plugin-freeze = ">=1.2.0"
 
 [tool.poetry.group.dev.dependencies]
 django-stubs = {extras = ["compatible-mypy"], version = "^5.1.3"}
