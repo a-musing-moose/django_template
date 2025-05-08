@@ -7,20 +7,19 @@ jobs:
     name: Static analysis Checks
     runs-on: ubuntu-latest
     steps:
+
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Install management tools
-      run: pipx install poetry && pipx install invoke
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.12'
-        cache: 'poetry'
+        version: "0.7.3"
 
     - name: Install dependencies
-      run: invoke install --skip-install-playwright
+      run: |
+        uvx tool install invoke
+        invoke install --skip-install-playwright
 
     - name: Run linting and formatting
       run: |
@@ -35,19 +34,16 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Install management tools
-      run: pipx install poetry && pipx install invoke
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.12'
-        cache: 'poetry'
+        version: "0.7.3"
 
     - name: Install dependencies
       run: |
-        invoke install --skip-install-playwright
+        uvx tool install invoke
         cp example.env .env
-
+        invoke install --skip-install-playwright
+        
     - name: Run type-checking
       run: invoke typing
 
@@ -59,16 +55,14 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Install management tools
-      run: pipx install poetry && pipx install invoke
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.12'
-        cache: 'poetry'
+        version: "0.7.3"
 
     - name: Install dependencies
       run: |
+        uvx tool install invoke
+        cp example.env .env
         invoke install --skip-install-playwright
 
     - name: Build the documentation
@@ -106,16 +100,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Install management tools
-      run: pipx install poetry && pipx install invoke
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.12'
-        cache: 'poetry'
+        version: "0.7.3"
 
     - name: Install dependencies
       run: |
+        uvx tool install invoke
         sudo apt-get update
 
         # Project System Dependencies
@@ -155,16 +146,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Install management tools
-      run: pipx install poetry && pipx install invoke
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.12'
-        cache: 'poetry'
+        version: "0.7.3"
 
     - name: Install dependencies
       run: |
+        uvx tool install invoke
         sudo apt-get update
 
         # Project System Dependencies
@@ -220,17 +208,16 @@ jobs:
         fetch-depth: 0
 
     - name: Install management tools
-      run: pipx install invoke
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.12'
+        version: "0.7.3"
 
-    - name: Setup environment variables
+    - name: Install dependencies
       run: |
+        uvx tool install invoke
         cp example.env .env
-
+        invoke install --skip-install-playwright
+    
     - name: Build service Docker Image
       run: invoke build-image
 

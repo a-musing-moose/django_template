@@ -1,9 +1,3 @@
----
-tags:
-    - Installation
-    - Configuration
-    - Setup
----
 # Your First Day
 
 So it is your first day on the project, where do you start? Here!
@@ -11,115 +5,32 @@ So it is your first day on the project, where do you start? Here!
 This tutorial will guide you through getting the project up and running as well as
 making your first update to the code.
 
-## Installing _pyenv_ & Python
+## Installing UV
 
-!!! warning
-    If you are not running a standard BASH shell then I'd recommend you read through the
-    docs at <https://github.com/pyenv/pyenv> to be sure you get up and running safely.
-
-### macOS
-
-Installing pyenv on macOS is most easily achieved with [Homebrew][homebrew], you
-probably already have homebrew installed, but if not you can follow the instructions on
-<https://brew.sh/>
-
-To install pyenv with homebrew you need to perform the following 2 commands in a
-terminal:
+This project uses [uv] for both dependency management and for installing and maintaining
+Python itself. Installing uv on macOS or Linux is quite simple:
 
 ```shell
-brew update
-brew install pyenv
+curl -LsSf https://astral.sh/uv/0.7.3/install.sh | sh
 ```
 
-Once you have done that you need to ensure that `pyenv init` is run when you open a
-terminal window with the following command:
-
-```shell
-echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bash_profile
-```
-
-Now close and re-open your terminal for changes to take effect. Pyenv build Python from
-scratch the first time you install a specific version. As such you will need a suitable
-build environment and supporting libraries. Details for various platforms can be found
-on the Pyenv wiki in the [common build problems][pyenv-build] section.
-
-Then to install Python:
-
-```shell
-pyenv install 3.12.2
-```
-
-### Linux
-
-The easiest way to install pyenv on Linux is to use the pyenv-installer:
-
-```shell
-curl https://pyenv.run | bash
-```
-
-This will download the latest version of pyenv and configure your shell to use it. You
-will need to exit and restart your terminal for the changes to be picked up.
-
-Pyenv build Python from scratch the first time you install a specific version. As such
-you will need a suitable build environment and supporting libraries. Details for various
-platforms can be found on the Pyenv wiki in the [common build problems][pyenv-build]
-section.
-
-Then to install Python:
-
-```shell
-pyenv install 3.12.2
-```
+If you have any difficulties, take a look at the full
+[uv installation instructions][uv-install]
 
 ## Preparing your Development Environment
 
-You need to start your preparation by ensuring the correct version of Python is activated
-in your shell.
+In addition to uv, this project makes heavy use of [invoke][pyinvoke] for automating the
+various processes you might need to do on a day to day basis. Whilst uv is used for
+managing your virtual environment, it is handy to have invoke installed globally so you
+do not need to prefix every call with `uv run invoke ...`. You can install it globally
+with:
 
 ```shell
-pyenv shell 3.12.2
+uv tool install invoke
 ```
 
-This project uses [Poetry][poetry] for Python virtual environment and dependency
-management. The installation of poetry is automated by a bash script they provide. This
-will ensure that the appropriate isolated environment is created for poetry:
-
-```shell
-curl -sSL https://install.python-poetry.org | python -
-```
-
-The installer creates a poetry wrapper in a well-known, platform-specific directory:
-
-- `$HOME/.local/bin` on Linux/macOS/Unix
-- `$POETRY_HOME/bin` if `$POETRY_HOME` is set.
-
-If this directory is not present in your `$PATH`, you can add it in order to invoke
-Poetry as `poetry`. You can check things are working correctly with the following:
-
-```shell
-poetry --version
-```
-
-If everything is working correctly it should print the current version of poetry.
-
-As a final step you need configure poetry to work nicely with pyenv and to place the
-virtual environment it creates in the same folder as the projects itself (in the folder
-`.venv`):
-
-```shell
-poetry config virtualenvs.prefer-active-python true
-poetry config virtualenvs.in-project true
-```
-
-This project also used [invoke][pyinvoke] for automating the various processes you might
-need to do on a day to day basis. Whilst poetry is used for managing your virtual
-environment, it is handy to have invoke installed globally within you pyenv environment
-so you do not need to prefix every call with `poetry run invoke ...`. You can install it
-within the current pyenv environment with:
-
-```shell
-pip install invoke
-```
+From then on you should be able to just call `invoke ...` or even shorter, `inv ...` to
+run invoke tasks.
 
 ## Checking out the project
 
@@ -127,20 +38,14 @@ Now that everything is prepared, you can get to checking out a copy of the proje
 Github and completing the setup.
 
 ```shell
-git clone git@github.com:a-musing-moose/django_template.git
+git clone git@github.com:{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}.git
 ```
 
-The change directory into your newly cloned copy of the source code and complete the
-set up:
+The change directory into your newly cloned copy of the source code and complete the set
+up:
 
 ```shell
-cd django_template
-```
-
-Then set the version of python you want to use for this project every time you open it:
-
-```shell
-pyenv local 3.12.2
+cd {{ cookiecutter.project_slug }}
 ```
 
 Take the example configuration file and make a copy for your local development:
@@ -149,10 +54,12 @@ Take the example configuration file and make a copy for your local development:
 cp example.env .env
 ```
 
-And then finally create the virtual environment and install all the dependencies with:
+And then finally you can installed the project which will ensure the correct version of
+Python is available as well as create the virtual environment and installs project
+dependencies.
 
 ```shell
-poetry install
+uv sync
 ```
 
 You are now all set to make your first change!
@@ -160,7 +67,7 @@ You are now all set to make your first change!
 ## Making your first change
 
 Your first change will be to add yourself to the list of humans who have worked on the
-project.
+project!
 
 This project uses a simple [trunk based][trunkbased] approach to developing features
 with short lived feature branches. So your first step making a change should always be
@@ -179,16 +86,16 @@ yourself! There is at least one example in there already you can copy. If you do
 comfortable sharing your Github name or general location that is fine, you do not need
 to provide them.
 
-Once you have made you change we need to commit it:
+Once you have made your changes, we need to commit it:
 
 ```shell
 git add src/templates/pages/humans.txt
 git commit -m "Adds me to the list of humans involved in this project"
 ```
 
-This will first stage the change with the `git add` then commit to the change with the
-`git commit`. For day to day commits we would expect a little more detail in the commit
-message, but for this first day the above message is fine.
+This will first _stage_ the change with the `git add` then _commit_ to the change with
+the `git commit`. For day to day commits we would expect a little more detail in the
+commit message, but for this first day the above message is fine.
 
 Next we need to create a pull request so others can review and approve you change.
 
@@ -211,14 +118,15 @@ the `main` branch.
 You can view your change once deployed at `https://<hostname>/humans.txt`
 
 !!! note
+
     As a second change, consider the tutorial you just completed. Were any of the steps
     unclear? Did anything just _not_ work? Create new branch from the `main` branch and
-    update this tutorial with anything you think needs fixing up. You can find the
-    source for this tutorial at `docs/tutorials/your-first-day.md`
+    update this tutorial with anything you think needs fixing up. You can find the source
+    for this tutorial at `docs/tutorials/your-first-day.md`
 
 <!-- Links -->
-[homebrew]: https://brew.sh/
-[pyenv-build]: https://github.com/pyenv/pyenv/wiki/common-build-problems
-[poetry]: https://python-poetry.org/
+
 [pyinvoke]: https://www.pyinvoke.org/
 [trunkbased]: https://trunkbaseddevelopment.com/
+[uv]: https://docs.astral.sh/uv
+[uv-install]: https://docs.astral.sh/uv/getting-started/installation/

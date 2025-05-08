@@ -3,13 +3,13 @@
 
 FROM python:3.13.2-slim-bookworm AS packager
 ENV PYTHONUNBUFFERED=1
-RUN pip install -U pip && pip install poetry poetry-plugin-freze
-COPY README.md pyproject.toml poetry.lock /source/
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY README.md pyproject.toml uv.lock /source/
 COPY src /source/src/
 WORKDIR /source/
 
 # Create a wheel with frozen requirements
-RUN rm -rf dist && poetry build  && poetry freeze-wheel
+RUN rm -rf dist && uv export --no-emit-workspace --no-hashes -o requirements-frozen.txt && uv build
 
 
 # Building Stage
@@ -33,8 +33,9 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN pip install -U pip
 
 # Install the application itself
+COPY --from=packager /source/requirements-frozen.txt /requirements-frozen.txt
 COPY --from=packager /source/dist/*.whl /
-RUN pip install *.whl
+RUN pip install -c requirements-frozen.txt *.whl
 
 # Final Runtime
 # =============

@@ -32,11 +32,11 @@ def install(ctx, skip_install_playwright: bool = False):
     thereby improving the build performance.
     """
     _title("Installing Dependencies")
-    ctx.run("poetry install")
+    ctx.run("uv sync")
 
     if not skip_install_playwright:
         _title("Installing Playwright Dependencies")
-        ctx.run("poetry run playwright install --with-deps")
+        ctx.run("uv run playwright install --with-deps")
 
 
 #####################
@@ -55,8 +55,8 @@ def format(ctx, check: bool = False) -> None:  # noqa: A001
     """
     suffix = " (check only)" if check else ""
     _title(f"Applying code formatters{suffix}")
-    ctx.run(f"poetry run ruff format src{' --check' if check else ''}")
-    ctx.run(f"poetry run ruff check --select I{' --fix' if not check else ''} src")
+    ctx.run(f"uv run ruff format src{' --check' if check else ''}")
+    ctx.run(f"uv run ruff check --select I{' --fix' if not check else ''} src")
 
 
 @invoke.task
@@ -72,7 +72,7 @@ def typing(ctx):
         f"export PYTHONPATH={% raw %}${{PYTHONPATH}}{% endraw %}:{src_path}"
     ):
         try:
-            ctx.run(f"poetry run dmypy run -- src/{PACKAGE}")
+            ctx.run(f"uv run dmypy run -- src/{PACKAGE}")
         except invoke.exceptions.UnexpectedExit:
             print(
                 "\n"
@@ -93,7 +93,7 @@ def typing_daemon_stop(ctx):
     Sometimes dmypy gets itself confused and needs to be stopped
     """
     _title("Terminating type checking Daemon")
-    ctx.run("poetry run dmypy stop")
+    ctx.run("uv run dmypy stop")
 
 
 @invoke.task
@@ -102,7 +102,7 @@ def lint(ctx, fix=False):
     Check linting in the src folder
     """
     _title(f"Linting code {'' if fix else '(check only)'}")
-    ctx.run(f"poetry run ruff check{' --fix ' if fix else ''} src")
+    ctx.run(f"uv run ruff check{' --fix ' if fix else ''} src")
 
 
 
@@ -114,7 +114,7 @@ def check_migrations(ctx):
     _title("Checking for missing migrations")
     try:
         ctx.run(
-            f"poetry run ./src/{PACKAGE}/manage.py makemigrations --dry-run --check",
+            f"uv run ./src/{PACKAGE}/manage.py makemigrations --dry-run --check",
             pty=True,
         )
     except invoke.exceptions.UnexpectedExit:
@@ -139,7 +139,7 @@ def test(ctx, name="", verbose=False, suite=None):
     Runs the test suite
     """
     title_suffix = "S"
-    args = ["poetry run pytest"]
+    args = ["uv run pytest"]
     if verbose:
         args.append("-vv")
 
@@ -163,7 +163,7 @@ def test(ctx, name="", verbose=False, suite=None):
     _title(f"Running the test suite{title_suffix} ✅")
     ctx.run(cmd, pty=True, echo=True)
     if "--cov" in cmd:
-        ctx.run("poetry run coverage html --show-contexts")
+        ctx.run("uv run coverage html --show-contexts")
 
 
 @invoke.task(typing, test, lint, check_migrations)
@@ -213,7 +213,7 @@ def build_docs(ctx):
     Build the {{ cookiecutter.project_name }} documentation
     """
     _title("Building documentation")
-    ctx.run("poetry run mkdocs build --strict")
+    ctx.run("uv run mkdocs build --strict")
 
 
 ###########
@@ -264,7 +264,7 @@ def run_docs(ctx):
     """
     Run the {{ cookiecutter.project_name }} documentation locally
     """
-    ctx.run("poetry run mkdocs serve")
+    ctx.run("uv run mkdocs serve")
 
 
 ###########

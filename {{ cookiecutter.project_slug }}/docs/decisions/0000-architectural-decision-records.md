@@ -11,15 +11,14 @@ costly on contentious decisions that are made along the way are properly recorde
 
 ## Decision
 
-We adopt a light weight log of architectural decision records of the important
-decisions made along the way. Each log entry is kept fairly simple, with 3 key headings:
+We adopt a light weight log of architectural decision records of the important decisions
+made along the way. Each log entry is kept fairly simple, with 3 key headings:
 
-- **Context**: The background information relevant to the decision being
-  recorded
+- **Context**: The background information relevant to the decision being recorded
 - **Decision**: The actual decision made
-- **Implications**: The intended outcomes and implications for the project, and
-  in particular an up-front or ongoing work that needs to be done to adopt the
-  decision made.
+- **Implications**: The intended outcomes and implications for the project, and in
+    particular an up-front or ongoing work that needs to be done to adopt the decision
+    made.
 
 The record should also provide basic metadata about itself:
 
@@ -36,21 +35,23 @@ either a significant future impact or represent significant effort to arrive at.
 
 ## Implications
 
-Code, even commented code, does not usually reflect the decisions made during
-its production. The decisions often represent either a significant investment in
-time or may reflect a series of known compromises. Without a mechanism for
-recording these decisions it is easy for future developers (including those who
-made the decision in the first place) to misunderstand decisions that have been
-made or the implications of changing them.
+Code, even commented code, does not usually reflect the decisions made during its
+production. The decisions often represent either a significant investment in time or may
+reflect a series of known compromises. Without a mechanism for recording these decisions
+it is easy for future developers (including those who made the decision in the first
+place) to misunderstand decisions that have been made or the implications of changing
+them.
 
-Ensuring these records are made and each new decision of significance is added
-does have a overhead - but likely considerably less than making future choices without
-the benefits of the historic decision records. Adopting a light weight approach to
-recording our decision making process also actively encourage a degree of forward think,
+Ensuring these records are made and each new decision of significance is added does have
+a overhead - but likely considerably less than making future choices without the
+benefits of the historic decision records. Adopting a light weight approach to recording
+our decision making process also actively encourage a degree of forward think,
 emphasising the importance of a design phase for the more major undertakings.
 
 <!-- Links -->
-[jmoss]: mailto:jmoss@commoncode.io
 
 <!-- Abbreviations -->
+
 *[ADR]: Architectural Decisions Record
+
+[jmoss]: mailto:jmoss@commoncode.io

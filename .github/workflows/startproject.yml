@@ -35,11 +35,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-
-      - uses: actions/setup-python@v5
+      
+      - name: Install management tools
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.13"
-
+          version: "0.7.3"
+          enable-cache: false
+    
       - name: Install Dependencies
         run: |
           sudo apt-get update
@@ -49,21 +51,21 @@ jobs:
             build-essential \
             libffi-dev \
             libpq-dev
-
-          # Base Python tooling
-          pip install invoke poetry cookiecutter
+          
+          # Python System Dependencies
+          uv tool install invoke
 
       - name: Create test project
         run: |
-          cookiecutter --no-input .
+          uvx cookiecutter --no-input .
 
       - name: Install test project
         run: |
           cd a_project
-          poetry run invoke install
+          invoke install
 
       - name: Check test project is valid
         run: |
           cd a_project
           cp example.env .env
-          poetry run invoke check
+          invoke check

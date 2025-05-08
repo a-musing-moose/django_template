@@ -2,5 +2,6 @@
     "project_name": "A Project",
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
     "author_name": "Jonathan Moss",
-    "author_email": "jonathan@miss-scarlet.house"
+    "author_email": "jonathan@miss-scarlet.house",
+    "github_org": "a-musing-moose"
 }

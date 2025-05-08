@@ -9,29 +9,28 @@ This project is intended as:
 - a kick-off point for projects
 - an evolving codebase which implements our best practices at the time
 - a place where I can document decisions that have been made about practices
-  - e.g.: why X was picked, why Y was avoided (+ pros & cons)
+    - e.g.: why X was picked, why Y was avoided (+ pros & cons)
+
+## Dependencies
+
+To use this template and the resulting project, the only thing you need installed
+initially is the Python package and project manager. [uv].
 
 ## Usage
 
-To create a new project from this template, you must will need to use
-[cookiecutter][cookiecutter]. The simplest way to do this is to install it with
-[pipx][pipx]:
+Creating a new project from this template is done with the tool [cookiecutter]. The
+simplest way to do this is to run it with [uvx], which comes with [uv].
 
 ```shell
-pipx install cookiecutter
+uvx cookiecutter https://github.com/a-musing-moose/django_template.git
 ```
 
-This will ensure that the `cookiecutter` command is available in your shell. From there
-you can create a new project with the following command:
-
-```shell
-> cookiecutter /path/to/template
-[1/4] project_name (Cookiecutter Website Simple):
-...
-```
-
-Cookiecutter will then guide you through the rest of the process.
+This will fetch the latest release of `cookiecutter`, download this template, and start
+the project creation process. Cookiecutter will then guide you through the rest of the
+process.
 
 <!-- Links -->
+
 [cookiecutter]: https://cookiecutter.readthedocs.io/en/stable/
-[pipx]: https://pypa.github.io/pipx/
+[uv]: https://docs.astral.sh/uv/
+[uvx]: https://docs.astral.sh/uv/guides/tools/

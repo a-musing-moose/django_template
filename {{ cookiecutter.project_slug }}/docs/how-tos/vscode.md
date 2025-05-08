@@ -1,7 +1,7 @@
----
-tags:
-    - vscode
----
+______________________________________________________________________
+
+## tags: - vscode
+
 # Recommended Configuration for VSCode
 
 This document is a work in progress
